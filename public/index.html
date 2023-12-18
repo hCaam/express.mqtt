@@ -29,7 +29,7 @@
     socket.on('mqttData', (data) => {
       const time = new Date().toLocaleTimeString();
       mqttChart.data.labels.push(time);
-      mqttChart.data.datasets[0].data.push(data);
+      mqttChart.data.datasets[0].data.push(data.cm);
       mqttChart.update();
     });
   </script>
