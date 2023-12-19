@@ -29,6 +29,7 @@
     socket.on('mqttData', (data) => {
       const time = new Date().toLocaleTimeString();
       mqttChart.data.labels.push(time);
+      console.log(data);
       mqttChart.data.datasets[0].data.push(data);
       mqttChart.update();
     });
