@@ -4,14 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MQTT Graph</title>
-  <script src="https://cdn.socket.io/4.1.3/socket.io.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.skypack.dev/swr"></script>
+  <script src="https://cdn.skypack.dev/axios"></script>
 </head>
 <body>
   <canvas id="mqttChart" width="400" height="200"></canvas>
 
   <script>
-    const socket = io();
+    const fetchData = async () => {
+      const response = await axios.get('/api/data'); // Update the route to match your server-side route
+      return response.data;
+    };
+
+    const { data, error } = useSWR('/api/data', fetchData);
 
     const ctx = document.getElementById('mqttChart').getContext('2d');
     const mqttChart = new Chart(ctx, {
@@ -21,18 +27,23 @@
         datasets: [{
           label: 'MQTT Data',
           borderColor: 'rgb(75, 192, 192)',
-          data: [],
+          data: data || [], // Use the fetched data or an empty array
         }],
       },
     });
 
-    socket.on('mqttData', (data) => {
+    // Update chart when new data is received
+    if (data) {
       const time = new Date().toLocaleTimeString();
       mqttChart.data.labels.push(time);
-      console.log(data);
-      mqttChart.data.datasets[0].data.push(data);
+      mqttChart.data.datasets[0].data.push(data.message); // Assuming 'message' is the property in your data
       mqttChart.update();
-    });
+    }
+
+    // Handle errors
+    if (error) {
+      console.error('Error fetching data:', error);
+    }
   </script>
 </body>
 </html>
