@@ -6,8 +6,7 @@ const path = require('path');
 const app = express();
 const server = http.createServer(app);
 
-const io = require('socket.io')(server);
-
+// MQTT configuration
 const mqttOptions = {
   username: 'DATA SISTEM IOT',
   password: 'Datasistemiot123',
@@ -17,7 +16,7 @@ const mqttClient = mqtt.connect('mqtts://34e4af2c39f947029e4d6ac853af4421.s2.eu.
 
 mqttClient.on('message', (topic, message) => {
   const data = String.fromCharCode.apply(null, message);
-  io.emit('mqttData', data);
+  io.emit('mqttData', { message: data }); // Emitting an object for consistency with the client-side code
 });
 
 mqttClient.on('connect', () => {
@@ -38,8 +37,17 @@ app.get('/', (req, res) => {
 });
 
 // Set up socket.io connection
+const io = require('socket.io')(server);
+
 io.on('connection', (socket) => {
   console.log('Socket.io connected');
+});
+
+// API endpoint for data fetching
+app.get('/api/data', (req, res) => {
+  // You should replace this with the logic that fetches data from your MQTT source
+  const dummyData = 'Dummy MQTT Data';
+  res.json({ message: dummyData });
 });
 
 // Start the server
