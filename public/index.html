@@ -36,7 +36,8 @@
     if (data) {
       const time = new Date().toLocaleTimeString();
       mqttChart.data.labels.push(time);
-      mqttChart.data.datasets[0].data.push(data.message); // Assuming 'message' is the property in your data
+      console.log(data);
+      mqttChart.data.datasets[0].data.push(data); // Assuming 'message' is the property in your data
       mqttChart.update();
     }
 
