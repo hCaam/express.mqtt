@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "chart.js": "^4.4.1",
     "express": "^4.18.2",
